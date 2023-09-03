@@ -85,9 +85,7 @@ class Mini:
     def backprop(self):
         assert all(isinstance(e, Mini) for e in self._parents), "object is not the result of calculations of the Mini class"
         for parent in self._parents:
-            print("parent value: ", parent.value)
             parent.gradient = self.gradient * parent._slope
-            print(f'parent gradient: {parent.gradient}')
             if all(isinstance(e, Mini) for e in parent._parents):
                 parent.backprop()
         
@@ -103,6 +101,5 @@ a1 = Mini(4)
 y = w1*x1**a1 + w2*x2 + b
 
 y.backprop()
-print("=========================")
 print(a1.gradient)
 print(f'expected: {w1.value*math.log(x1.value)*x1.value**a1.value}')
