@@ -80,6 +80,39 @@ class TestMini(unittest.TestCase):
         result.backprop()
         self.assertEqual(a.gradient, -3/4)  # The gradient for a / b with respect to b = -a / b**2
 
+    def test_exp(self):
+        a = Mini(4)
+        result = a.exp()
+        # test value output
+        self.assertEqual(result.value, math.exp(4))
+        # test gradient output
+        result.backprop()
+        self.assertEqual(a.gradient, math.exp(4))
+        b = Mini(2)
+        c = Mini(4)
+        result = b * c.exp()
+        result.backprop()
+        self.assertEqual(b.gradient, math.exp(4), "gradient of b is incorrect")
+        self.assertEqual(c.gradient, 2*math.exp(4), "gradient of c is incorrect")
+
+    def test_sigmoid(self):
+        def sigmoid(x):
+            return 1 / (1 + math.exp(-x))
+        
+        a = Mini(4)
+        result = a.sigmoid()
+        # test value output
+        self.assertEqual(result.value, sigmoid(4))
+        # test gradient output
+        result.backprop()
+        self.assertEqual(a.gradient, sigmoid(4)*(1 - sigmoid(4)))
+        b = Mini(-3)
+        c = Mini(2)
+        result = b * c.sigmoid()
+        result.backprop()
+        self.assertEqual(b.gradient, -sigmoid(2), "gradient of b is incorrect")
+        self.assertEqual(c.gradient, -3*sigmoid(2)*(1 - sigmoid(2)), "gradient of c is incorrect")
+        
     def test_backpropagation(self):
         a = Mini(3)
         b = Mini(2)
@@ -87,10 +120,10 @@ class TestMini(unittest.TestCase):
         d = c + 1
         e = d ** 2
         e.backprop()
-        self.assertEqual(a.gradient, 28)
-        self.assertEqual(b.gradient, 42)
-        self.assertEqual(c.gradient, 14)
-        self.assertEqual(d.gradient, 14)
+        self.assertEqual(a.gradient, 28, "gradient of a is incorrect")
+        self.assertEqual(b.gradient, 42, "gradient of b is incorrect")
+        self.assertEqual(c.gradient, 14, "gradient of c is incorrect")
+        self.assertEqual(d.gradient, 14, "gradient of d is incorrect")
 
     def test_backpropagation_numerically(self):
         # numerical tests to calm my insecurities
@@ -107,11 +140,9 @@ class TestMini(unittest.TestCase):
         d_a = ((w1.value*x1.value + b.value)**(a.value + h) - y.value) / h
 
         y.backprop()
-        self.assertAlmostEqual(w1.gradient, d_w1, 2)
-        self.assertAlmostEqual(x1.gradient, d_x1, 2)
-        self.assertAlmostEqual(b.gradient, d_b, 2)
-        self.assertAlmostEqual(a.gradient, d_a, 2)
-        
-
+        self.assertAlmostEqual(w1.gradient, d_w1, 2, "gradient of w1 is incorrect")
+        self.assertAlmostEqual(x1.gradient, d_x1, 2, "gradient of x1 is incorrect")
+        self.assertAlmostEqual(b.gradient, d_b, 2, "gradient of b is incorrect")
+        self.assertAlmostEqual(a.gradient, d_a, 2, "gradient of a is incorrect")
 
 unittest.main()

@@ -28,8 +28,8 @@ class Mini:
             other = Mini(other)
         
         child = Mini(self.value * other.value)
-        self._slope = other.value
-        other._slope = self.value
+        self._slope = other.value if self.value > 0 else -other.value
+        other._slope = self.value if other.value > 0 else -self.value
         child._parents = (self, other)
         return child
     
@@ -73,7 +73,21 @@ class Mini:
         assert isinstance(other, (Mini, int, float)), "subtrahend must be of type Mini/int/float"
         return other + (-self) # first runs __neg__(), then runs __add__()
 
-    # backpropagation
+    def exp(self):
+        self._slope = math.exp(self.value)
+        child = Mini(math.exp(self.value))
+        child._parents = (self, )
+        return child
+
+    def sigmoid(self):
+        def calculate(x):
+            return 1 / (1 + math.exp(-x))
+        
+        self._slope = calculate(self.value)*(1-calculate(self.value))
+        child = Mini(calculate(self.value))
+        child._parents = (self, )
+        return child 
+
     def backprop(self):
         if not all(isinstance(e, Mini) for e in self._parents):
             return self.gradient
