@@ -14,8 +14,6 @@ class Mini:
             other = Mini(other)
 
         child = Mini(self.value + other.value)
-        self._slope = 1 if self.value > 0 else -1
-        other._slope = 1 if other.value > 0 else -1
         child._parents = (self, other)
         return child
 
@@ -59,12 +57,6 @@ class Mini:
         assert isinstance(other, (Mini, int, float)), "dividend must be of type Mini/int/float"
         return other * self**-1 # first runs __pow__(), then runs __mul__()
 
-    def __neg__(self): # handles -obj
-        self.value *= -1 
-        self._slope *= -1
-        self.gradient *= -1
-        return self
-
     def __sub__(self, other): # handles self - other
         assert isinstance(other, (Mini, int, float)), "subtrahend must be of type Mini/int/float"
         return self + (-other) # may run __neg__() first, then runs __add__()
@@ -72,6 +64,12 @@ class Mini:
     def __rsub__(self, other): # handles other - self
         assert isinstance(other, (Mini, int, float)), "subtrahend must be of type Mini/int/float"
         return other + (-self) # first runs __neg__(), then runs __add__()
+    
+    def __neg__(self): # handles -obj
+        self.value *= -1 
+        self._slope *= -1
+        self.gradient *= -1
+        return self
 
     def exp(self):
         self._slope = math.exp(self.value)

@@ -5,11 +5,12 @@ from main import Mini
 class TestMini(unittest.TestCase):
     def test_addition(self):
         a = Mini(10)
-        b = Mini(4)
-        result = a + b
+        b = Mini(-4)
+        result = a - b
         self.assertEqual(result.value, 14)
         result.backprop()
-        self.assertEqual(a.gradient, 1)
+        self.assertEqual(a.gradient, 1, "gradient a is incorrect")
+        self.assertEqual(b.gradient, -1, "gradient b is incorrect")
     
     def test_multiplication(self):
         a = Mini(-5)
@@ -26,7 +27,6 @@ class TestMini(unittest.TestCase):
         result = a ** b
         self.assertEqual(result.value, 8)
         result.backprop()
-        result.backprop()
         self.assertEqual(a.gradient, 12)  # The gradient for a ** b with respect to a = b * a**(b-1)
 
     def test_division(self):
@@ -34,7 +34,6 @@ class TestMini(unittest.TestCase):
         b = Mini(2)
         result = a / b
         self.assertEqual(result.value, 5)
-        result.backprop()
         result.backprop()
         self.assertEqual(a.gradient, 0.5)  # The gradient for a / b with respect to a = 1 / b
 
@@ -113,6 +112,25 @@ class TestMini(unittest.TestCase):
         result.backprop()
         self.assertEqual(b.gradient, sigmoid(2), "gradient of b is incorrect")
         self.assertEqual(c.gradient, -3*sigmoid(2)*(1 - sigmoid(2)), "gradient of c is incorrect")
+
+    def test_sigmoid_numerically(self):
+        def sigmoid(x):
+            return 1 / (1 + math.exp(-x))
+        
+        a = Mini(-4)
+        b = Mini(3)
+        c = Mini(3)
+        result = a - b*c.sigmoid()
+        # numerical differentiation
+        h = 0.00001
+        d_a = ((a.value + h) - b.value*sigmoid(c.value) - result.value) / h
+        d_b = (a.value - (b.value + h)*sigmoid(c.value) - result.value) / h
+        d_c = (a.value - b.value*sigmoid(c.value + h) - result.value) / h
+
+        result.backprop()
+        self.assertAlmostEqual(a.gradient, d_a, 2, "gradient of a is incorrect")
+        self.assertAlmostEqual(b.gradient, d_b, 2, "gradient of b is incorrect")
+        self.assertAlmostEqual(c.gradient, d_c, 2, "gradient of c is incorrect")
 
     def test_backpropagation(self):
         a = Mini(3)
