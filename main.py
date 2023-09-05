@@ -28,8 +28,8 @@ class Mini:
             other = Mini(other)
         
         child = Mini(self.value * other.value)
-        self._slope = other.value if self.value > 0 else -other.value
-        other._slope = self.value if other.value > 0 else -self.value
+        self._slope = other.value 
+        other._slope = self.value 
         child._parents = (self, other)
         return child
     

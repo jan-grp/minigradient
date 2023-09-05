@@ -12,12 +12,13 @@ class TestMini(unittest.TestCase):
         self.assertEqual(a.gradient, 1)
     
     def test_multiplication(self):
-        a = Mini(5)
+        a = Mini(-5)
         b = Mini(3)
         result = a * b
-        self.assertEqual(result.value, 15)
+        self.assertEqual(result.value, -15, "calulation is incorrect")
         result.backprop()
-        self.assertEqual(a.gradient, 3)
+        self.assertEqual(a.gradient, 3, "gradient of a is incorrect")
+        self.assertEqual(b.gradient, -5, "gradient of b is incorrect")
 
     def test_power(self):
         a = Mini(2)
@@ -110,9 +111,9 @@ class TestMini(unittest.TestCase):
         c = Mini(2)
         result = b * c.sigmoid()
         result.backprop()
-        self.assertEqual(b.gradient, -sigmoid(2), "gradient of b is incorrect")
+        self.assertEqual(b.gradient, sigmoid(2), "gradient of b is incorrect")
         self.assertEqual(c.gradient, -3*sigmoid(2)*(1 - sigmoid(2)), "gradient of c is incorrect")
-        
+
     def test_backpropagation(self):
         a = Mini(3)
         b = Mini(2)
