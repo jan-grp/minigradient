@@ -66,15 +66,21 @@ class Mini:
         return other + (-self) # first runs __neg__(), then runs __add__()
     
     def __neg__(self): # handles -obj
-        negated_instance = Mini(-self.value)
-        negated_instance._slope = -self._slope
-        negated_instance.gradient = -self.gradient
-        negated_instance._parents = (self, )
-        return negated_instance
+        child = Mini(-self.value)
+        child._slope = -self._slope
+        child.gradient = -self.gradient
+        child._parents = (self, )
+        return child
 
     def exp(self):
         self._slope = math.exp(self.value)
         child = Mini(math.exp(self.value))
+        child._parents = (self, )
+        return child
+
+    def log(self):
+        child = Mini(math.log(self.value))
+        self._slope = 1 / self.value
         child._parents = (self, )
         return child
 

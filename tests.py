@@ -95,6 +95,21 @@ class TestMini(unittest.TestCase):
         self.assertEqual(b.gradient, math.exp(4), "gradient of b is incorrect")
         self.assertEqual(c.gradient, 2*math.exp(4), "gradient of c is incorrect")
 
+    def test_log(self):
+        a = Mini(4)
+        result = a.log()
+        # test value output
+        self.assertEqual(result.value, math.log(4), "Mini.log() calculated the wrong output")
+        # test gradient output
+        result.backprop()
+        self.assertEqual(a.gradient, 1/4)
+        b = Mini(-2)
+        c = Mini(6)
+        result = b * c.log()
+        result.backprop()
+        self.assertEqual(b.gradient, math.log(6), "gradient of b is incorrect")
+        self.assertEqual(c.gradient, -1/3, "gradient of c is incorrect")
+
     def test_sigmoid(self):
         def sigmoid(x):
             return 1 / (1 + math.exp(-x))
