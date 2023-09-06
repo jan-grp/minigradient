@@ -148,7 +148,7 @@ class TestMini(unittest.TestCase):
         # numerical tests to calm my insecurities
         w1 = Mini(3)
         x1 = Mini(2)
-        b = Mini(1)
+        b = Mini(-1)
         a = Mini(2)
         y = (w1*x1 + b)**a
         

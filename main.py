@@ -1,12 +1,12 @@
 import math
 
 class Mini:
-    def __init__(self, value, gradient=1, _parents=(None, None), _slope=1):
+    def __init__(self, value):
         self.value = value
-        self.gradient = gradient 
-        self._parents = _parents
-        # self.operation = None
-        self._slope = _slope # the derivative of it's child with respect to itself
+        self.gradient = 1 # dy/dslef, where y is the final result where .backprop() is called on
+        self._parents = (None, None)
+        # self.operation = _operation
+        self._slope = 1 # df/dself, where f is the immediate operation self is used for 
 
     def __add__(self, other): # handles: self + other
         assert isinstance(other, (Mini, int, float)), "operand must be of type Mini/int/float"
@@ -66,10 +66,11 @@ class Mini:
         return other + (-self) # first runs __neg__(), then runs __add__()
     
     def __neg__(self): # handles -obj
-        self.value *= -1 
-        self._slope *= -1
-        self.gradient *= -1
-        return self
+        negated_instance = Mini(-self.value)
+        negated_instance._slope = -self._slope
+        negated_instance.gradient = -self.gradient
+        negated_instance._parents = (self, )
+        return negated_instance
 
     def exp(self):
         self._slope = math.exp(self.value)
@@ -78,13 +79,11 @@ class Mini:
         return child
 
     def sigmoid(self):
-        def calculate(x):
-            return 1 / (1 + math.exp(-x))
-        
-        self._slope = calculate(self.value)*(1-calculate(self.value))
-        child = Mini(calculate(self.value))
+        sigmoid_value = 1 / (1 + math.exp(-self.value))
+        child = Mini(sigmoid_value)
+        self._slope = sigmoid_value * (1 - sigmoid_value)
         child._parents = (self, )
-        return child 
+        return child
 
     def backprop(self):
         if not all(isinstance(e, Mini) for e in self._parents):
