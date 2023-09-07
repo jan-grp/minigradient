@@ -13,7 +13,7 @@ class Neuron():
         return result.sigmoid() if self.use_activation else result
     
     def params(self): # used for optimization (training)
-        return self.weights.append(self.bias)
+        return self.weights + [self.bias]
     
 class Layer():
     def __init__(self, num_neurons, num_weights_per_neuron, use_activatino_function=True):

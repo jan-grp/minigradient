@@ -41,7 +41,7 @@ class Mini:
         
         child = Mini(self.value ** other.value)
         self._slope = other.value * self.value**(other.value - 1)
-        other._slope = math.log(self.value) * self.value**other.value
+        other._slope = math.log(self.value) * self.value**other.value if self.value > 0 else 1
         child._parents = (self, other)
         return child
  
