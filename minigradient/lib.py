@@ -1,5 +1,5 @@
 import random
-from main import Mini
+from minigradient.main import Mini
 
 random.seed(42)
 

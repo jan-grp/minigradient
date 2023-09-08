@@ -1,6 +1,6 @@
 import unittest
 import math
-from main import Mini
+from minigradient.main import Mini
 
 class TestMini(unittest.TestCase):
     def test_addition(self):

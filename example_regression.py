@@ -1,6 +1,6 @@
 # train a model to convert Celcius to Fahrenheit
 
-from lib import Neuron
+from minigradient.lib import Neuron
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -21,6 +21,7 @@ parameters = model.params()
 num_iterations = 2000
 learning_rate = 0.1
 
+# training
 loss_array = []
 for _ in range(num_iterations):
     # make predictions on the hole dataset
@@ -40,7 +41,6 @@ for _ in range(num_iterations):
 
     # reset the gradients for the next training step
     model.reset_gradients()
-
 
 # summerize the results
 print("Summary:\n")
