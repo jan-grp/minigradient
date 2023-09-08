@@ -1,7 +1,8 @@
-from main import Mini
+from lib import Neuron
 import matplotlib.pyplot as plt
 import numpy as np
-np.random.seed(1111)
+
+np.random.seed(42)
 
 # learn to convert Celcius to Fahrenheit
 
@@ -14,29 +15,33 @@ Y_norm = (Y - np.mean(Y))/np.std(Y)
 
 num_iterations = 2000
 learning_rate = 0.1
-w = Mini((np.random.randn(1) * 0.1)[0])
-b = Mini(0)
+model = Neuron(num_weights=1, use_activation_function=False)
+parameters = model.params()
 
 loss_array = []
 for _ in range(num_iterations):
-    predictions = [w*x + b for x in X_norm]
+    predictions = [model([x]) for x in X_norm]
     losses = [(y - y_hat)**2 / 2 for y, y_hat in zip(Y_norm, predictions)]
     avg_loss = sum(losses) / len(losses)
     loss_array.append(avg_loss.value)
     avg_loss.backprop()
-    w = Mini(w.value - learning_rate*w.gradient)
-    b = Mini(b.value - learning_rate*b.gradient)
+    # update parameters (gradient descent)
+    for param in parameters:
+        param.value = param.value - learning_rate*param.gradient
+    model.reset_gradients()
 
+
+# summerize the results
 print("Summary:\n")
 print(f'num_iterations: {num_iterations}\nlearning_rate: {learning_rate}\nfinal_loss: {loss_array[-1]}')
-print(f'weight: {w.value}\nbias: {b.value}')
+print(f'weight: {parameters[0].value}\nbias: {parameters[1].value}')
 
-predictions_norm = [w*x + b for x in X_norm[:3]]
+predictions_norm = [model([x]) for x in X_norm[:3]]
 # Denormalize the predictions to get the final predictions
-predictions_unnormalized = [p.value * np.std(Y) + np.mean(Y) for p in predictions_norm]
+predictions_denormalized = [p.value * np.std(Y) + np.mean(Y) for p in predictions_norm]
 
 print("\nMake predictions:\n")
-print(f'input: {X[:3]}\ndesired output: {Y[:3]}\nactual output: {predictions_unnormalized}')
+print(f'input: {X[:3]}\ndesired output: {Y[:3]}\nactual output: {predictions_denormalized}')
 
 def plot_loss(loss_array):
     _, ax = plt.subplots()

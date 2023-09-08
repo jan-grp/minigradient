@@ -41,7 +41,7 @@ class Mini:
         
         child = Mini(self.value ** other.value)
         self._slope = other.value * self.value**(other.value - 1)
-        other._slope = math.log(self.value) * self.value**other.value if self.value > 0 else 1
+        other._slope = math.log(self.value) * self.value**other.value if self.value > 0 else 1 # this is a very naiv line of code
         child._parents = (self, other)
         return child
  
@@ -98,3 +98,7 @@ class Mini:
             parent.gradient = self.gradient * parent._slope
             if all(isinstance(e, Mini) for e in parent._parents):
                 parent.backprop()
+
+    def reset_gradient(self):
+        self._slope = 1
+        self.gradient = 0

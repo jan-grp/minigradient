@@ -1,6 +1,8 @@
 import random
 from main import Mini
 
+random.seed(42)
+
 class Neuron():
     def __init__(self, num_weights, use_activation_function=True):
         self.weights = [Mini(random.uniform(-1, 1)) for _ in range(num_weights)]
@@ -15,6 +17,10 @@ class Neuron():
     def params(self): # used for optimization (training)
         return self.weights + [self.bias]
     
+    def reset_gradients(self):
+        for param in self.params():
+            param.reset_gradient()
+
 class Layer():
     def __init__(self, num_neurons, num_weights_per_neuron, use_activatino_function=True):
         self.neurons = [Neuron(num_weights=num_weights_per_neuron,
@@ -26,4 +32,8 @@ class Layer():
     
     def params(self): # used for optimization (training)
         return [parameter for neuron in self.neurons for parameter in neuron.params()]
+    
+    def reset_gradients(self): # used after each optimization step
+        for param in self.params():
+            param.reset_gradient()
     
