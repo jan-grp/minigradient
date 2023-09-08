@@ -1,10 +1,10 @@
+# train a model to convert Celcius to Fahrenheit
+
 from lib import Neuron
 import matplotlib.pyplot as plt
 import numpy as np
 
 np.random.seed(42)
-
-# learn to convert Celcius to Fahrenheit
 
 # construct data
 X = np.random.randn(100)
@@ -13,21 +13,32 @@ Y = np.array([1.8*x+32 for x in X])
 X_norm = (X - np.mean(X))/np.std(X)
 Y_norm = (Y - np.mean(Y))/np.std(Y)
 
-num_iterations = 2000
-learning_rate = 0.1
+# model
 model = Neuron(num_weights=1, use_activation_function=False)
 parameters = model.params()
 
+# training parameters
+num_iterations = 2000
+learning_rate = 0.1
+
 loss_array = []
 for _ in range(num_iterations):
+    # make predictions on the hole dataset
     predictions = [model([x]) for x in X_norm]
+
+    # calculate the loss for each prediction
     losses = [(y - y_hat)**2 / 2 for y, y_hat in zip(Y_norm, predictions)]
+
+    # calculate the average loss
     avg_loss = sum(losses) / len(losses)
     loss_array.append(avg_loss.value)
-    avg_loss.backprop()
+    
     # update parameters (gradient descent)
+    avg_loss.backprop()
     for param in parameters:
         param.value = param.value - learning_rate*param.gradient
+
+    # reset the gradients for the next training step
     model.reset_gradients()
 
 
