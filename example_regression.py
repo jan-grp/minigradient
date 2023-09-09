@@ -1,6 +1,6 @@
 # train a model to convert Celcius to Fahrenheit
 
-from minigradient.lib import Neuron
+from minigradient.lib import Neuron, plot_loss
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -53,14 +53,5 @@ predictions_denormalized = [p.value * np.std(Y) + np.mean(Y) for p in prediction
 
 print("\nMake predictions:\n")
 print(f'input: {X[:3]}\ndesired output: {Y[:3]}\nactual output: {predictions_denormalized}')
-
-def plot_loss(loss_array):
-    _, ax = plt.subplots()
-    ax.plot(loss_array)
-    ax.set_xlabel('training iterations')
-    ax.set_ylabel('loss')
-    ax.set_title(f'loss over training iterations (final loss: {round(loss_array[-1], 4)})')
-
-    plt.show()
 
 plot_loss(loss_array)

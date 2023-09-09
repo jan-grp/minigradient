@@ -1,5 +1,6 @@
 import random
 from minigradient.main import Mini
+import matplotlib.pyplot as plt
 
 random.seed(42)
 
@@ -27,7 +28,7 @@ class Layer():
                                use_activation_function=use_activatino_function) for _ in range(num_neurons)]
         
     def __call__(self, X):
-        outputs = [neuron(X=X) for neuron in self.neurons]
+        outputs = [neuron(X=X) for neuron in self.neurons] if len(self.neurons) > 1 else self.neurons[0](X)
         return outputs
     
     def params(self): # used for optimization (training)
@@ -37,3 +38,12 @@ class Layer():
         for param in self.params():
             param.reset_gradient()
     
+
+def plot_loss(loss_array):
+    _, ax = plt.subplots()
+    ax.plot(loss_array)
+    ax.set_xlabel('training iterations')
+    ax.set_ylabel('loss')
+    ax.set_title(f'loss over training iterations (final loss: {round(loss_array[-1], 4)})')
+
+    plt.show()

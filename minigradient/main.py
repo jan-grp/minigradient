@@ -6,7 +6,7 @@ class Mini:
         self.gradient = 1 # dy/dslef, where y is the final result where .backprop() is called on
         self._parents = (None, None)
         # self.operation = _operation
-        self._slope = 1 # df/dself, where f is the immediate operation self is used for 
+        self._slope = 1 # df/dself, where f is the immediate operation self is used in 
 
     def __add__(self, other): # handles: self + other
         assert isinstance(other, (Mini, int, float)), "operand must be of type Mini/int/float"
@@ -101,4 +101,4 @@ class Mini:
 
     def reset_gradient(self):
         self._slope = 1
-        self.gradient = 0
+        self.gradient = 1

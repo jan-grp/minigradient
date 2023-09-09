@@ -110,6 +110,18 @@ class TestMini(unittest.TestCase):
         self.assertEqual(b.gradient, math.log(6), "gradient of b is incorrect")
         self.assertEqual(c.gradient, -1/3, "gradient of c is incorrect")
 
+    def test_log_loss(self):
+        a = Mini(0.2)
+        b = Mini(1.5)
+        y = 1
+        p = a * b
+        result = -(y*p.log() + (1 - y)*(1 - p).log())
+        # test value output
+        self.assertAlmostEqual(result.value, -(1*math.log(0.3) + (1-1)*math.log(1 - 0.3)), 5,  "incorrect value of log loss")
+        # test gradient output
+        result.backprop()
+        self.assertEqual(p.gradient, -(y/p.value - (1-y)/(1-p.value)), "gradient of p is incorrect")
+
     def test_sigmoid(self):
         def sigmoid(x):
             return 1 / (1 + math.exp(-x))
