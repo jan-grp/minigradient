@@ -35,8 +35,8 @@ def predict(X):
     return final_out
 
 # training parameters
-num_iterations = 1
-learning_rate = 1
+num_iterations = 1000
+learning_rate = .2
 
 # training
 loss_array = []
@@ -45,8 +45,9 @@ for _ in range(num_iterations):
     # make predictions on the hole dataset
     predictions = [predict([x1, x2]) for x1, x2 in zip(X_train[0], X_train[1])]
 
-    # loss of each prediction
-    losses = [-(y*y_hat.log() + (1 - y)*(1 - y_hat).log()) for y, y_hat in zip(Y_train[0], predictions)]
+    # loss (svm) of each prediction
+    # losses = [-(y*y_hat.log() + (1 - y)*(1 - y_hat).log()) for y, y_hat in zip(Y_train[0], predictions)]
+    losses = [(1 + -y*prediction).sigmoid() for y, prediction in zip(Y_train[0], predictions)]
 
     # calculate the average loss
     avg_loss = sum(losses) / len(losses)
@@ -55,13 +56,10 @@ for _ in range(num_iterations):
     # optimization
     avg_loss.backprop()
     for param in model_params:
-        print("initial value: ", param.value)
-        print("gradient: ", param.gradient)
         param.value = param.value - learning_rate*param.gradient
-        print("updated value: ", param.value)
         param.reset_gradient()
         break
 
-# plot_loss(loss_array)
+plot_loss(loss_array)
 print("initial loss: ", loss_array[0])
 print("final loss: ", loss_array[-1])
